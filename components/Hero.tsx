@@ -2,6 +2,15 @@ import React from 'react';
 import { Lock, ServerOff } from 'lucide-react';
 
 const Hero: React.FC = () => {
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', href);
+    }
+  };
+
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
       {/* Background decoration */}
@@ -27,12 +36,14 @@ const Hero: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
             href="#contact"
+            onClick={(e) => handleScroll(e, '#contact')}
             className="w-full sm:w-auto px-8 py-4 bg-cyber-glow text-slate-900 font-bold rounded-lg hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] transform hover:scale-105"
           >
             Zamów audyt bezpieczeństwa
           </a>
           <a
             href="#process"
+            onClick={(e) => handleScroll(e, '#process')}
             className="w-full sm:w-auto px-8 py-4 bg-slate-800 text-white font-medium rounded-lg border border-slate-700 hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
           >
             Zobacz jak to działa

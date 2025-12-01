@@ -14,15 +14,38 @@ const Navigation: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsMobileMenuOpen(false);
+    
+    if (href === '#') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+    }
+
+    const element = document.querySelector(href);
+    if (element) {
+      // The element already has scroll-mt-24 via Tailwind class in the component, 
+      // so scrollIntoView is sufficient and respects the margin.
+      element.scrollIntoView({ behavior: 'smooth' });
+      // Update URL hash without jumping
+      window.history.pushState(null, '', href);
+    }
+  };
+
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-slate-900/90 backdrop-blur-md border-b border-slate-800' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo(0,0)}>
+            <a 
+                href="#" 
+                className="flex-shrink-0 flex items-center gap-2 cursor-pointer" 
+                onClick={(e) => handleNavClick(e, '#')}
+            >
               <ShieldCheck className="h-8 w-8 text-cyber-glow" />
               <span className="text-white font-bold text-xl tracking-tight">SecureAI <span className="text-cyber-glow">Local</span></span>
-            </div>
+            </a>
           </div>
           
           <div className="hidden md:block">
@@ -31,6 +54,7 @@ const Navigation: React.FC = () => {
                 <a
                   key={item.label}
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
                   className="text-slate-300 hover:text-cyber-glow px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   {item.label}
@@ -38,6 +62,7 @@ const Navigation: React.FC = () => {
               ))}
               <a
                 href="#contact"
+                onClick={(e) => handleNavClick(e, '#contact')}
                 className="bg-cyber-glow/10 border border-cyber-glow/50 text-cyber-glow hover:bg-cyber-glow hover:text-slate-900 px-4 py-2 rounded-md text-sm font-medium transition-all"
               >
                 Darmowy Audyt
@@ -58,14 +83,14 @@ const Navigation: React.FC = () => {
 
       {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-slate-900 border-b border-slate-800">
+        <div className="md:hidden bg-slate-900 border-b border-slate-800 shadow-xl">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {NAV_ITEMS.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 className="text-slate-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, item.href)}
               >
                 {item.label}
               </a>
@@ -73,7 +98,7 @@ const Navigation: React.FC = () => {
             <a
                href="#contact"
                className="text-cyber-glow block px-3 py-2 rounded-md text-base font-medium font-bold"
-               onClick={() => setIsMobileMenuOpen(false)}
+               onClick={(e) => handleNavClick(e, '#contact')}
             >
               Zamów Audyt
             </a>
